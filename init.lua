@@ -12,6 +12,7 @@ local M = {}
 --
 --     require('export')
 --
+-- There will be a "File > Export" menu.
 -- @field browser (string)
 --   Path to or the name of the browser executable to show exported HTML files
 --   in.

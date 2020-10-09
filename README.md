@@ -8,6 +8,7 @@ or Textadept's *modules/* directory, and then putting the following in your
 
     require('export')
 
+There will be a "File > Export" menu.
 
 ## Fields defined by `export`
 
