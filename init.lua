@@ -1,4 +1,4 @@
--- Copyright 2016-2020 Mitchell. See LICENSE.
+-- Copyright 2016-2021 Mitchell. See LICENSE.
 
 local M = {}
 
@@ -6,16 +6,14 @@ local M = {}
 ---
 -- Textadept module for outputting source files into various formats like HTML.
 --
--- Install this module by copying it into your *~/.textadept/modules/* directory
--- or Textadept's *modules/* directory, and then putting the following in your
--- *~/.textadept/init.lua*:
+-- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
+-- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
 --     require('export')
 --
 -- There will be a "File > Export" menu.
 -- @field browser (string)
---   Path to or the name of the browser executable to show exported HTML files
---   in.
+--   Path to or the name of the browser executable to show exported HTML files in.
 --   The default value is 'firefox'.
 -- @field line_numbers (boolean)
 --   Whether or not to show line numbers in exported output.
@@ -32,13 +30,10 @@ if not rawget(_L, 'Export') then
 end
 
 ---
--- Exports filename *filename* (or the current file) to filename *out_filename*
--- (or the user-specified file) in HTML format, and then opens the result in a
--- web browser.
--- @param filename The filename to export. The default value is the current
---   buffer's filename.
--- @param out_filename The filename to export to. If `nil`, the user is prompted
---   for one.
+-- Exports filename *filename* (or the current file) to filename *out_filename* (or the
+-- user-specified file) in HTML format, and then opens the result in a web browser.
+-- @param filename The filename to export. The default value is the current buffer's filename.
+-- @param out_filename The filename to export to. If `nil`, the user is prompted for one.
 -- @name to_html
 function M.to_html(filename, out_filename)
   -- Prompt the user for the HTML file to export to, if necessary.
@@ -55,8 +50,8 @@ function M.to_html(filename, out_filename)
 
   local html = {}
   html[#html + 1] = '<html><head><meta charset="utf-8"/>'
-  html[#html + 1] = format(
-    '<title>%s</title>', filename:iconv('UTF-8', _CHARSET) or _L['Untitled'])
+  html[#html + 1] = format('<title>%s</title>',
+    filename:iconv('UTF-8', _CHARSET) or buffer:untitled())
 
   -- Iterate over defined styles and convert them into CSS.
   html[#html + 1] = '<style type="text/css">'
@@ -66,14 +61,13 @@ function M.to_html(filename, out_filename)
     local style = {}
     -- Determine style properties.
     local style_def = view.property_expanded['style.' .. name]
-    style_def = style_def:gsub('%%(%b())', function(prop)
-      return view.property_expanded[prop:sub(2, -2)]
-    end)
+    style_def = style_def:gsub('%%(%b())',
+      function(prop) return view.property_expanded[prop:sub(2, -2)] end)
     if style_def == '' then
       style_def = table.concat({
-        string.format('size:%d', view.style_size[i]),
-        string.format('fore:%s', view.style_fore[i]),
-        string.format('back:%s', view.style_back[i]),
+        string.format('size:%d', view.style_size[i]), -- LuaFormatter
+        string.format('fore:%s', view.style_fore[i]), -- LuaFormatter
+        string.format('back:%s', view.style_back[i]), -- LuaFormatter
         view.style_bold[i] and 'bold' or 'notbold',
         view.style_italic[i] and 'italics' or 'notitalics',
         view.style_underline[i] and 'underlined' or 'notunderlined'
@@ -84,16 +78,12 @@ function M.to_html(filename, out_filename)
     local back_color = style_def:match('back:([^,]+)')
     -- TODO: inheritance like "...,bold,notbold,..."
     local bold = style_def:find('bold') and not style_def:find('notbold')
-    local italic =
-      style_def:find('italics') and not style_def:find('notitalics')
-    local underline =
-      style_def:find('underlined') and not style_def:find('notunderlined')
+    local italic = style_def:find('italics') and not style_def:find('notitalics')
+    local underline = style_def:find('underlined') and not style_def:find('notunderlined')
     -- Convert style properties to CSS.
     style[#style + 1] = name == 'default' and '* {' or format('.%s {', name)
     if name == 'default' then style[#style + 1] = 'font-family: Monospace;' end
-    if font_size then
-      style[#style + 1] = format('font-size: %dpt;', font_size)
-    end
+    if font_size then style[#style + 1] = format('font-size: %dpt;', font_size) end
     if tonumber(fore_color) then
       local r = tonumber(fore_color) & 0xFF
       local g = (tonumber(fore_color) & (0xFF << 8)) >> 8
@@ -119,14 +109,13 @@ function M.to_html(filename, out_filename)
   local line_num = 1
   local line_num_fmt = format('%%%dd', #tostring(buffer.line_count))
   if M.line_numbers then
-    html[#html + 1] = format(
-      '<span class="linenumber">%s&nbsp;</span>',
+    html[#html + 1] = format('<span class="linenumber">%s&nbsp;</span>',
       format(line_num_fmt, line_num):gsub(' ', '&nbsp;'))
     line_num = line_num + 1
   end
 
-  -- Iterate over characters in the buffer, grouping styles into <span>s whose
-  -- classes are their respective style names.
+  -- Iterate over characters in the buffer, grouping styles into <span>s whose classes are
+  -- their respective style names.
   local style_at = buffer.style_at
   local pos, style = 1, style_at[1]
   local prev_pos, prev_style
@@ -134,37 +123,31 @@ function M.to_html(filename, out_filename)
   local position_after = buffer.position_after
   local function format_span(code)
     -- Ensure HTML entities are escaped and insert line numbers as necessary.
-    code = code:gsub('[<>& ]', {
-      ['<'] = '&lt;', ['>'] = '&gt;', ['&'] = '&amp;', [' '] = '&nbsp;'
-    }):gsub('\n', function()
+    local function insert_line_number()
       local suffix = ''
       if M.line_numbers then
-        suffix = format(
-          '<span class="linenumber">%s&nbsp;</span>',
+        suffix = format('<span class="linenumber">%s&nbsp;</span>',
           format(line_num_fmt, line_num):gsub(' ', '&nbsp;'))
         line_num = line_num + 1
       end
       return format('\n<br/>%s', suffix)
-    end)
+    end
+    code = code:gsub('[<>& ]', {['<'] = '&lt;', ['>'] = '&gt;', ['&'] = '&amp;', [' '] = '&nbsp;'})
+      :gsub('\n', insert_line_number)
     return format('%s</span>', code)
   end
   while pos <= buffer.length do
     style = style_at[pos]
     if style ~= prev_style then
       -- Start of new <span>. Finish the old one first, if necessary.
-      if prev_pos then
-        html[#html + 1] = format_span(text_range(buffer, prev_pos, pos))
-      end
+      if prev_pos then html[#html + 1] = format_span(text_range(buffer, prev_pos, pos)) end
       html[#html + 1] = format('<span class="%s">', buffer:name_of_style(style))
       prev_pos, prev_style = pos, style
     end
     pos = position_after(buffer, pos)
   end
   -- Finish any incomplete <span>.
-  if prev_pos then
-    html[#html + 1] = format_span(
-      text_range(buffer, prev_pos, buffer.length + 1))
-  end
+  if prev_pos then html[#html + 1] = format_span(text_range(buffer, prev_pos, buffer.length + 1)) end
 
   html[#html + 1] = '</body></html>'
 
@@ -176,9 +159,6 @@ end
 -- Add a sub-menu.
 local m_file = textadept.menu.menubar[_L['File']]
 table.insert(m_file, #m_file - 1, {''}) -- separator
-table.insert(m_file, #m_file - 1, {
-  title = _L['Export'],
-  {_L['Export to HTML...'], M.to_html}
-})
+table.insert(m_file, #m_file - 1, {title = _L['Export'], {_L['Export to HTML...'], M.to_html}})
 
 return M
