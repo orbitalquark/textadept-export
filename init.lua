@@ -56,7 +56,7 @@ function M.to_html(filename, out_filename)
   -- Iterate over defined styles and convert them into CSS.
   html[#html + 1] = '<style type="text/css">'
   for i = 1, view.STYLE_MAX do
-    local name = buffer:name_of_style(i)
+    name = buffer:name_of_style(i)
     if name == 'Not Available' then goto continue end
     local style = {}
     -- Determine style properties.
@@ -117,7 +117,7 @@ function M.to_html(filename, out_filename)
   -- Iterate over characters in the buffer, grouping styles into <span>s whose classes are
   -- their respective style names.
   local style_at = buffer.style_at
-  local pos, style = 1, style_at[1]
+  local pos, style = 1, nil
   local prev_pos, prev_style
   local text_range = buffer.text_range
   local position_after = buffer.position_after
