@@ -61,7 +61,7 @@ function M.to_html(filename, out_filename)
     local style = {}
     -- Determine style properties.
     local style_def = view.property_expanded['style.' .. name]
-    style_def = style_def:gsub('%%(%b())',
+    style_def = style_def:gsub('[%%$](%b())',
       function(prop) return view.property_expanded[prop:sub(2, -2)] end)
     if style_def == '' then
       style_def = table.concat({
