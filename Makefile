@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Mitchell. See LICENSE.
+# Copyright 2016-2022 Mitchell. See LICENSE.
 
 # Documentation.
 

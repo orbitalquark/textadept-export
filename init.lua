@@ -1,4 +1,4 @@
--- Copyright 2016-2021 Mitchell. See LICENSE.
+-- Copyright 2016-2022 Mitchell. See LICENSE.
 
 local M = {}
 
@@ -60,9 +60,9 @@ function M.to_html(filename, out_filename)
     if name == 'Not Available' then goto continue end
     local style = {}
     -- Determine style properties.
-    local style_def = view.property_expanded['style.' .. name]
+    local style_def = view.property['style.' .. name]
     style_def = style_def:gsub('[%%$](%b())',
-      function(prop) return view.property_expanded[prop:sub(2, -2)] end)
+      function(prop) return view.property[prop:sub(2, -2)] end)
     if style_def == '' then
       style_def = table.concat({
         string.format('size:%d', view.style_size[i]), -- LuaFormatter
