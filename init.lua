@@ -20,7 +20,7 @@ local M = {}
 --   The default value is `true`.
 module('export')]]
 
-M.browser = 'firefox'
+M.browser = not WIN32 and 'firefox' or 'start ""'
 M.line_numbers = true
 
 -- Localizations.
