@@ -56,49 +56,26 @@ function M.to_html(filename, out_filename)
   -- Iterate over defined styles and convert them into CSS.
   html[#html + 1] = '<style type="text/css">'
   for i = 1, view.STYLE_MAX do
-    name = buffer:name_of_style(i)
-    if name == 'Not Available' then goto continue end
+    name = buffer:name_of_style(i):gsub('%.', '-')
+    if name == 'Unknown' then goto continue end
     local style = {}
-    -- Determine style properties.
-    local style_def = view.property['style.' .. name]
-    style_def = style_def:gsub('[%%$](%b())',
-      function(prop) return view.property[prop:sub(2, -2)] end)
-    if style_def == '' then
-      style_def = table.concat({
-        string.format('size:%d', view.style_size[i]), -- LuaFormatter
-        string.format('fore:%s', view.style_fore[i]), -- LuaFormatter
-        string.format('back:%s', view.style_back[i]), -- LuaFormatter
-        view.style_bold[i] and 'bold' or 'notbold',
-        view.style_italic[i] and 'italics' or 'notitalics',
-        view.style_underline[i] and 'underlined' or 'notunderlined'
-      }, ',')
-    end
-    local font_size = style_def:match('size:(%d+)')
-    local fore_color = style_def:match('fore:([^,]+)')
-    local back_color = style_def:match('back:([^,]+)')
-    -- TODO: inheritance like "...,bold,notbold,..."
-    local bold = style_def:find('bold') and not style_def:find('notbold')
-    local italic = style_def:find('italics') and not style_def:find('notitalics')
-    local underline = style_def:find('underlined') and not style_def:find('notunderlined')
     -- Convert style properties to CSS.
     style[#style + 1] = name == 'default' and '* {' or format('.%s {', name)
     if name == 'default' then style[#style + 1] = 'font-family: Monospace;' end
-    if font_size then style[#style + 1] = format('font-size: %dpt;', font_size) end
-    if tonumber(fore_color) then
-      local r = tonumber(fore_color) & 0xFF
-      local g = (tonumber(fore_color) & (0xFF << 8)) >> 8
-      local b = (tonumber(fore_color) & (0xFF << 16)) >> 16
-      style[#style + 1] = format('color: rgb(%d,%d,%d);', r, g, b)
-    end
-    if tonumber(back_color) then
-      local r = tonumber(back_color) & 0xFF
-      local g = (tonumber(back_color) & (0xFF << 8)) >> 8
-      local b = (tonumber(back_color) & (0xFF << 16)) >> 16
-      style[#style + 1] = format('background-color: rgb(%d,%d,%d);', r, g, b)
-    end
-    if bold then style[#style + 1] = 'font-weight: bold;' end
-    if italic then style[#style + 1] = 'font-style: italic;' end
-    if underline then style[#style + 1] = 'text-decoration: underline;' end
+    style[#style + 1] = format('font-size: %dpt;', view.style_size[i])
+    local fore_color = view.style_fore[i]
+    local r = tonumber(fore_color) & 0xFF
+    local g = (tonumber(fore_color) & (0xFF << 8)) >> 8
+    local b = (tonumber(fore_color) & (0xFF << 16)) >> 16
+    style[#style + 1] = format('color: rgb(%d,%d,%d);', r, g, b)
+    local back_color = view.style_back[i]
+    local r = tonumber(back_color) & 0xFF
+    local g = (tonumber(back_color) & (0xFF << 8)) >> 8
+    local b = (tonumber(back_color) & (0xFF << 16)) >> 16
+    style[#style + 1] = format('background-color: rgb(%d,%d,%d);', r, g, b)
+    if view.style_bold[i] then style[#style + 1] = 'font-weight: bold;' end
+    if view.style_italic[i] then style[#style + 1] = 'font-style: italic;' end
+    if view.style_underline[i] then style[#style + 1] = 'text-decoration: underline;' end
     style[#style + 1] = '}\n'
     html[#html + 1] = table.concat(style, '\n')
     ::continue::
@@ -109,7 +86,7 @@ function M.to_html(filename, out_filename)
   local line_num = 1
   local line_num_fmt = format('%%%dd', #tostring(buffer.line_count))
   if M.line_numbers then
-    html[#html + 1] = format('<span class="linenumber">%s&nbsp;</span>',
+    html[#html + 1] = format('<span class="line_number">%s&nbsp;</span>',
       format(line_num_fmt, line_num):gsub(' ', '&nbsp;'))
     line_num = line_num + 1
   end
@@ -126,7 +103,7 @@ function M.to_html(filename, out_filename)
     local function insert_line_number()
       local suffix = ''
       if M.line_numbers then
-        suffix = format('<span class="linenumber">%s&nbsp;</span>',
+        suffix = format('<span class="line_number">%s&nbsp;</span>',
           format(line_num_fmt, line_num):gsub(' ', '&nbsp;'))
         line_num = line_num + 1
       end
@@ -141,7 +118,7 @@ function M.to_html(filename, out_filename)
     if style ~= prev_style then
       -- Start of new <span>. Finish the old one first, if necessary.
       if prev_pos then html[#html + 1] = format_span(text_range(buffer, prev_pos, pos)) end
-      html[#html + 1] = format('<span class="%s">', buffer:name_of_style(style))
+      html[#html + 1] = format('<span class="%s">', buffer:name_of_style(style):gsub('%.', '-'))
       prev_pos, prev_style = pos, style
     end
     pos = position_after(buffer, pos)
