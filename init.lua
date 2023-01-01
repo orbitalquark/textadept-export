@@ -1,4 +1,4 @@
--- Copyright 2016-2022 Mitchell. See LICENSE.
+-- Copyright 2016-2023 Mitchell. See LICENSE.
 
 local M = {}
 
