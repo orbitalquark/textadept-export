@@ -12,30 +12,30 @@ There will be a "File > Export" menu.
 ## Fields defined by `export`
 
 <a id="export.browser"></a>
-### `export.browser` (string)
+### `export.browser` 
 
 Path to or the name of the browser executable to show exported HTML files in.
-  The default value is 'firefox'.
+The default value is 'firefox'.
 
 <a id="export.line_numbers"></a>
-### `export.line_numbers` (boolean)
+### `export.line_numbers` 
 
 Whether or not to show line numbers in exported output.
-  The default value is `true`.
+The default value is `true`.
 
 
 ## Functions defined by `export`
 
 <a id="export.to_html"></a>
-### `export.to_html`(*filename, out\_filename*)
+### `export.to_html`(*filename*, *out_filename*)
 
 Exports filename *filename* (or the current file) to filename *out_filename* (or the
 user-specified file) in HTML format, and then opens the result in a web browser.
 
 Parameters:
 
-* *`filename`*: The filename to export. The default value is the current buffer's filename.
-* *`out_filename`*: The filename to export to. If `nil`, the user is prompted for one.
+- *filename*:  The filename to export. The default value is the current buffer's filename.
+- *out_filename*:  The filename to export to. If `nil`, the user is prompted for one.
 
 
 ---

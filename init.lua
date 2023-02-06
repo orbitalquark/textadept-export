@@ -2,7 +2,6 @@
 
 local M = {}
 
---[[This comment is for LuaDoc
 ---
 -- Textadept module for outputting source files into various formats like HTML.
 --
@@ -12,15 +11,16 @@ local M = {}
 --     require('export')
 --
 -- There will be a "File > Export" menu.
--- @field browser (string)
---   Path to or the name of the browser executable to show exported HTML files in.
---   The default value is 'firefox'.
--- @field line_numbers (boolean)
---   Whether or not to show line numbers in exported output.
---   The default value is `true`.
-module('export')]]
+-- @module export
 
+---
+-- Path to or the name of the browser executable to show exported HTML files in.
+-- The default value is 'firefox'.
 M.browser = not WIN32 and 'firefox' or 'start ""'
+
+---
+-- Whether or not to show line numbers in exported output.
+-- The default value is `true`.
 M.line_numbers = true
 
 -- Localizations.
@@ -34,7 +34,6 @@ end
 -- user-specified file) in HTML format, and then opens the result in a web browser.
 -- @param filename The filename to export. The default value is the current buffer's filename.
 -- @param out_filename The filename to export to. If `nil`, the user is prompted for one.
--- @name to_html
 function M.to_html(filename, out_filename)
   -- Prompt the user for the HTML file to export to, if necessary.
   filename = filename or buffer.filename or ''
