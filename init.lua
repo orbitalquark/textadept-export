@@ -126,7 +126,7 @@ function M.to_html(filename, out_filename)
 end
 
 -- Add a sub-menu.
-local m_file = textadept.menu.menubar[_L['File']]
+local m_file = textadept.menu.menubar['File']
 table.insert(m_file, #m_file - 1, {''}) -- separator
 table.insert(m_file, #m_file - 1, {title = _L['Export'], {_L['Export to HTML...'], M.to_html}})
 
