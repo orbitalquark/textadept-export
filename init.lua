@@ -5,7 +5,7 @@
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 -- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
---     require('export')
+--	require('export')
 --
 -- There will be a "File > Export" menu.
 -- @module export
