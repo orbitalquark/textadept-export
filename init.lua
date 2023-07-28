@@ -34,7 +34,7 @@ function M.to_html(filename, out_filename)
 	filename = filename or buffer.filename or ''
 	local dir, name = filename:match('^(.-[/\\]?)([^/\\]-)%.?[^.]*$')
 	out_filename = out_filename or
-		ui.dialogs.open{title = _L['Save File'], dir = dir, file = name .. '.html'}
+		ui.dialogs.save{title = _L['Save File'], dir = dir, file = name .. '.html'}
 	if not out_filename then return end
 
 	local buffer = buffer
