@@ -5,14 +5,14 @@
 -- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
 -- ```lua
---	local export = require('export')
+-- local export = require('export')
 -- ```
 --
 -- There will be a "File > Export" menu.
 -- @module export
 local M = {}
 
---- Command used to open in the user's default web browser exported HTML files.
+--- Command used to open exported HTML files in the user's default web browser.
 M.browser = WIN32 and 'start ""' or OSX and 'open' or LINUX and 'xdg-open'
 
 --- Show line numbers in exported output.

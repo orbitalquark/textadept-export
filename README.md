@@ -6,7 +6,7 @@ Install this module by copying it into your *~/.textadept/modules/* directory or
 *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 
 ```lua
-	local export = require('export')
+local export = require('export')
 ```
 
 There will be a "File > Export" menu.
@@ -14,7 +14,7 @@ There will be a "File > Export" menu.
 <a id="export.browser"></a>
 ## `export.browser`
 
-Command used to open in the user's default web browser exported HTML files.
+Command used to open exported HTML files in the user's default web browser.
 
 <a id="export.line_numbers"></a>
 ## `export.line_numbers`
