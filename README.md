@@ -5,37 +5,32 @@ Textadept module for outputting source files into various formats like HTML.
 Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 
-	require('export')
+```lua
+	local export = require('export')
+```
 
 There will be a "File > Export" menu.
 
-## Fields defined by `export`
-
 <a id="export.browser"></a>
-### `export.browser` 
+## `export.browser`
 
-Path to or the name of the browser executable to show exported HTML files in.
-The default value is 'firefox'.
+Command used to open in the user's default web browser exported HTML files.
 
 <a id="export.line_numbers"></a>
-### `export.line_numbers` 
+## `export.line_numbers`
 
-Whether or not to show line numbers in exported output.
+Show line numbers in exported output.
+
 The default value is `true`.
 
-
-## Functions defined by `export`
-
 <a id="export.to_html"></a>
-### `export.to_html`(*filename*, *out_filename*)
+## `export.to_html`([*filename*=buffer.filename[, *out_filename*]])
 
-Exports filename *filename* (or the current file) to filename *out_filename* (or the
-user-specified file) in HTML format, and then opens the result in a web browser.
+Exports a file to HTML format and opens the result in a web browser.
 
 Parameters:
-
-- *filename*:  The filename to export. The default value is the current buffer's filename.
+- *filename*:  The filename to export.
 - *out_filename*:  The filename to export to. If `nil`, the user is prompted for one.
 
 
----
+

@@ -1,21 +1,21 @@
 -- Copyright 2016-2025 Mitchell. See LICENSE.
 
 --- Textadept module for outputting source files into various formats like HTML.
---
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
 -- *modules/* directory, and then putting the following in your *~/.textadept/init.lua*:
 --
---	require('export')
+-- ```lua
+--	local export = require('export')
+-- ```
 --
 -- There will be a "File > Export" menu.
 -- @module export
 local M = {}
 
---- Path to or the name of the browser executable to show exported HTML files in.
--- The default value is 'firefox'.
+--- Command used to open in the user's default web browser exported HTML files.
 M.browser = WIN32 and 'start ""' or OSX and 'open' or LINUX and 'firefox'
 
---- Whether or not to show line numbers in exported output.
+--- Show line numbers in exported output.
 -- The default value is `true`.
 M.line_numbers = true
 
@@ -25,10 +25,9 @@ if not rawget(_L, 'Export') then
 	_L['Export to HTML...'] = 'Export to _HTML...'
 end
 
---- Exports filename *filename* (or the current file) to filename *out_filename* (or the
--- user-specified file) in HTML format, and then opens the result in a web browser.
--- @param filename The filename to export. The default value is the current buffer's filename.
--- @param out_filename The filename to export to. If `nil`, the user is prompted for one.
+--- Exports a file to HTML format and opens the result in a web browser.
+-- @param[opt=buffer.filename] filename The filename to export.
+-- @param[optchain] out_filename The filename to export to. If `nil`, the user is prompted for one.
 function M.to_html(filename, out_filename)
 	-- Prompt the user for the HTML file to export to, if necessary.
 	filename = filename or buffer.filename or ''
