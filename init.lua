@@ -60,9 +60,9 @@ function M.to_html(filename, out_filename)
 		local b = (tonumber(fore_color) & (0xFF << 16)) >> 16
 		style[#style + 1] = format('color: rgb(%d,%d,%d);', r, g, b)
 		local back_color = view.style_back[i]
-		local r = tonumber(back_color) & 0xFF
-		local g = (tonumber(back_color) & (0xFF << 8)) >> 8
-		local b = (tonumber(back_color) & (0xFF << 16)) >> 16
+		r = tonumber(back_color) & 0xFF
+		g = (tonumber(back_color) & (0xFF << 8)) >> 8
+		b = (tonumber(back_color) & (0xFF << 16)) >> 16
 		style[#style + 1] = format('background-color: rgb(%d,%d,%d);', r, g, b)
 		if view.style_bold[i] then style[#style + 1] = 'font-weight: bold;' end
 		if view.style_italic[i] then style[#style + 1] = 'font-style: italic;' end
@@ -85,7 +85,7 @@ function M.to_html(filename, out_filename)
 	-- Iterate over characters in the buffer, grouping styles into <span>s whose classes are
 	-- their respective style names.
 	local style_at = buffer.style_at
-	local pos, style = 1, nil
+	local pos = 1
 	local prev_pos, prev_style
 	local text_range = buffer.text_range
 	local position_after = buffer.position_after
@@ -105,7 +105,7 @@ function M.to_html(filename, out_filename)
 		return format('%s</span>', code)
 	end
 	while pos <= buffer.length do
-		style = style_at[pos]
+		local style = style_at[pos]
 		if style ~= prev_style then
 			-- Start of new <span>. Finish the old one first, if necessary.
 			if prev_pos then html[#html + 1] = format_span(text_range(buffer, prev_pos, pos)) end
