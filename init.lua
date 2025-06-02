@@ -19,12 +19,6 @@ M.browser = WIN32 and 'start ""' or OSX and 'open' or LINUX and 'xdg-open'
 -- The default value is `true`.
 M.line_numbers = true
 
--- Localizations.
-if not rawget(_L, 'Export') then
-	_L['Export'] = 'E_xport'
-	_L['Export to HTML...'] = 'Export to _HTML...'
-end
-
 --- Exports a file to HTML format and opens the result in a web browser.
 -- @param[opt=buffer.filename] filename The filename to export.
 -- @param[optchain] out_filename The filename to export to. If `nil`, the user is prompted for one.
@@ -125,6 +119,8 @@ function M.to_html(filename, out_filename)
 end
 
 -- Add a sub-menu.
+_L['Export'] = 'E_xport'
+_L['Export to HTML...'] = 'Export to _HTML...'
 local m_file = textadept.menu.menubar['File']
 table.insert(m_file, #m_file - 1, {''}) -- separator
 table.insert(m_file, #m_file - 1, {title = _L['Export'], {_L['Export to HTML...'], M.to_html}})
