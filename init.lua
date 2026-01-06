@@ -1,4 +1,4 @@
--- Copyright 2016-2025 Mitchell. See LICENSE.
+-- Copyright 2016-2026 Mitchell. See LICENSE.
 
 --- Textadept module for outputting source files into various formats like HTML.
 -- Install this module by copying it into your *~/.textadept/modules/* directory or Textadept's
