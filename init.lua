@@ -12,6 +12,8 @@
 -- @module export
 local M = {}
 
+local md = require('export/markdown')
+
 --- Command used to open exported HTML files in the user's default web browser.
 M.browser = WIN32 and 'start ""' or OSX and 'open' or LINUX and 'xdg-open'
 
@@ -118,11 +120,31 @@ function M.to_html(filename, out_filename)
 	os.spawn(format('%s "%s"', M.browser, out_filename))
 end
 
+function M.markdown_to_html()
+	if buffer:get_lexer() == 'markdown' then
+		-- Prompt the user for the HTML file to export to, if necessary.
+		filename = filename or buffer.filename or ''
+		local dir, name = filename:match('^(.-)[/\\]?([^/\\]-)%.?[^.]*$')
+		out_filename = out_filename or
+			ui.dialogs.save{title = _L['Save File'], dir = dir, file = name .. '.html'}
+		if not out_filename then return end
+		local htmlout = md(buffer:get_text())
+		io.open(out_filename, 'w'):write(htmlout):close()
+		os.spawn(string.format('%s "%s"', M.browser, out_filename))
+	else
+		ui.statusbar_text = 'Not a Markdown file!'
+	end
+end
+
 -- Add a sub-menu.
 _L['Export'] = 'E_xport'
 _L['Export to HTML...'] = 'Export to _HTML...'
+_L['Export Markdown to HTML...'] = 'Export _Markdown to HTML...'
 local m_file = textadept.menu.menubar['File']
 table.insert(m_file, #m_file - 1, {''}) -- separator
-table.insert(m_file, #m_file - 1, {title = _L['Export'], {_L['Export to HTML...'], M.to_html}})
+table.insert(m_file, #m_file - 1, {title = _L['Export'],
+	{_L['Export to HTML...'], M.to_html},
+	{_L['Export Markdown to HTML...'], M.markdown_to_html}
+})
 
 return M
