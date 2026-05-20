@@ -13,7 +13,7 @@
 local M = {}
 
 --- Command used to open exported HTML files in the user's default web browser.
-M.browser = WIN32 and 'start ""' or OSX and 'open' or LINUX and 'xdg-open'
+M.browser = OS == 'windows' and 'start ""' or OS == 'macos' and 'open' or 'xdg-open'
 
 --- Show line numbers in exported output.
 -- The default value is `true`.
